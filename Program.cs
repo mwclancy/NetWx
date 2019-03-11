@@ -38,7 +38,7 @@ namespace NetWx
             }
             else
             {
-                
+                Console.WriteLine("Current teperature is unavailable.");
             }
         }
 
