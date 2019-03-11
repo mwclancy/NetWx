@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Net;
 
-
 namespace NetWx
 {
     class Program
@@ -22,10 +21,25 @@ namespace NetWx
             }
 
             var currentWeather = GetWeather(id);
+            if(currentWeather.Conditions != null)
+            {
+                Console.WriteLine("The current conditons at " + id.ToUpper() + " are " + currentWeather.Conditions + ".");
+            }
+            else
+            {
+                Console.WriteLine("Current conditions unavailable.");
+            }
 
-            Console.WriteLine("The current conditons at " + id.ToUpper() + " are " + currentWeather.Conditions + ".");
-            Console.WriteLine("The temperature is " + currentWeather.TempC.ToString("#.0") + " C, " + currentWeather.getDegreesF().ToString("#.0") + " F.");
-
+            if (currentWeather.TempC != null)
+            {
+                var tempC = (double)currentWeather.TempC;
+                var tempF = (double)currentWeather.TempF;
+                Console.WriteLine("The temperature is " + tempC.ToString("#.0") + " C, " + tempF.ToString("#.0") + " F.");
+            }
+            else
+            {
+                
+            }
         }
 
         /// <summary>
@@ -67,11 +81,11 @@ namespace NetWx
             // parse the response using Newtonsoft JSON
             JObject o = JObject.Parse(rawResponse);
             var currentCond = (string)o["properties"]["textDescription"];
-            var currentTempC = (double)o["properties"]["temperature"]["value"];
 
-            WeatherInfo currentWeather = new WeatherInfo { Conditions = currentCond, TempC = currentTempC };
+            var currentTempC = (double?)o["properties"]["temperature"]["value"];
+            var currentWeather = new WeatherInfo { Conditions = currentCond, TempC = currentTempC };
 
-            return currentWeather;            
+            return currentWeather;
         }
     }
 }
